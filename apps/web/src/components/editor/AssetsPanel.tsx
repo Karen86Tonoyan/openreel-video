@@ -35,6 +35,7 @@ import { useUIStore } from "../../stores/ui-store";
 import type { MediaItem } from "@openreel/core";
 import { AspectRatioMatchDialog } from "./dialogs/AspectRatioMatchDialog";
 import { AIGenTab } from "./AIGenTab";
+import { ComfyUITab } from "./ComfyUITab";
 import { useTtsAudioStore } from "../../stores/tts-store";
 import { toast } from "../../stores/notification-store";
 import { saveFileHandle, saveDirectoryHandle } from "../../services/media-storage";
@@ -522,11 +523,11 @@ export const AssetsPanel: React.FC = () => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [activeTab, setActiveTabRaw] = useState<
-    "media" | "text" | "graphics" | "ai"
+    "media" | "text" | "graphics" | "ai" | "comfy"
   >("media");
   const ttsHasUnsaved = useTtsAudioStore((s) => s.generatedAudio !== null && !s.isAudioSaved);
 
-  const setActiveTab = useCallback((tab: "media" | "text" | "graphics" | "ai") => {
+  const setActiveTab = useCallback((tab: "media" | "text" | "graphics" | "ai" | "comfy") => {
     if (activeTab === "ai" && tab !== "ai" && ttsHasUnsaved) {
       toast.warning("Unsaved audio discarded", "Save to media or download next time to keep it.");
     }
@@ -964,6 +965,19 @@ export const AssetsPanel: React.FC = () => {
         >
           AI Gen
           {activeTab === "ai" && (
+            <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-primary rounded-t-full shadow-[0_-2px_8px_rgba(34,197,94,0.5)]" />
+          )}
+        </button>
+        <button
+          onClick={() => setActiveTab("comfy")}
+          className={`pb-3 transition-all relative whitespace-nowrap ${
+            activeTab === "comfy"
+              ? "text-primary"
+              : "text-primary/70 hover:text-primary"
+          }`}
+        >
+          ComfyUI
+          {activeTab === "comfy" && (
             <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-primary rounded-t-full shadow-[0_-2px_8px_rgba(34,197,94,0.5)]" />
           )}
         </button>
@@ -1446,6 +1460,9 @@ export const AssetsPanel: React.FC = () => {
 
       {/* AI Tab Content */}
       {activeTab === "ai" && <AIGenTab />}
+
+      {/* ComfyUI Tab Content */}
+      {activeTab === "comfy" && <ComfyUITab />}
 
       {aspectRatioDialogData && (
         <AspectRatioMatchDialog
