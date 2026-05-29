@@ -7,6 +7,7 @@ import {
   Monitor,
   Square,
   FolderOpen,
+  GraduationCap,
 } from "lucide-react";
 import { Button, Switch, Label } from "@openreel/ui";
 import { useProjectStore } from "../../stores/project-store";
@@ -14,6 +15,7 @@ import { useUIStore } from "../../stores/ui-store";
 import { SOCIAL_MEDIA_PRESETS, type SocialMediaCategory } from "@openreel/core";
 import { TemplateGallery } from "./TemplateGallery";
 import { RecentProjects } from "./RecentProjects";
+import { LearnPanel } from "./LearnPanel";
 import { useRouter } from "../../hooks/use-router";
 import { useEditorPreload } from "../../hooks/useEditorPreload";
 import { useAnalytics, AnalyticsEvents } from "../../hooks/useAnalytics";
@@ -127,7 +129,7 @@ const OpenReelLogo: React.FC<{ className?: string }> = ({ className = "" }) => (
   </svg>
 );
 
-type ViewMode = "home" | "templates" | "recent";
+type ViewMode = "home" | "templates" | "recent" | "learn";
 
 interface WelcomeScreenProps {
   initialTab?: "templates" | "recent";
@@ -241,6 +243,14 @@ export const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ initialTab }) => {
     );
   }
 
+  if (viewMode === "learn") {
+    return (
+      <div className="fixed inset-0 z-50 bg-background flex flex-col">
+        <LearnPanel onBack={() => setViewMode("home")} />
+      </div>
+    );
+  }
+
   return (
     <div className="fixed inset-0 z-50 bg-background overflow-hidden">
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(34,197,94,0.05),transparent_60%)]" />
@@ -336,7 +346,7 @@ export const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ initialTab }) => {
             })}
           </div>
 
-          <div className="flex items-center justify-center gap-3">
+          <div className="flex items-center justify-center gap-3 flex-wrap">
             <Button
               variant="outline"
               onClick={() => setViewMode("templates")}
@@ -360,6 +370,14 @@ export const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ initialTab }) => {
             >
               <FolderOpen size={16} />
               Open editor
+            </Button>
+            <Button
+              variant="outline"
+              onClick={() => setViewMode("learn")}
+              className="rounded-xl border-primary/30 text-primary hover:bg-primary/10 hover:text-primary"
+            >
+              <GraduationCap size={16} />
+              Kurs Claude PL
             </Button>
           </div>
         </div>
